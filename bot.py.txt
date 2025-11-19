@@ -1,0 +1,85 @@
+import os
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes
+
+# Токен бота (получим из настроек GitHub)
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
+
+# Обработчик команды /start
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.message.from_user
+    
+    welcome_text = (
+        f"Привет, {user.first_name}! 👋\n\n"
+        "Добро пожаловать в VPN сервис! 🛡️\n\n"
+        "Я помогу тебе настроить безопасное подключение к интернету.\n\n"
+        "📋 Доступные команды:\n"
+        "/start - это приветственное сообщение\n"
+        "/help - список всех команд\n"
+        "/instruction - инструкция по установке\n"
+        "/support - связь с поддержкой\n\n"
+        "Выбери нужную команду из меню или напиши /help для помощи!"
+    )
+    
+    await update.message.reply_text(welcome_text)
+
+# Обработчик команды /help
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    help_text = (
+        "🛠️ Список команд:\n\n"
+        "1. /instruction - 📖 Инструкция по установке VPN\n"
+        "2. /support - 👨💻 Связь с технической поддержкой\n\n"
+        "💡 Как пользоваться:\n"
+        "Просто выбери нужную команду из списка выше!"
+    )
+    
+    await update.message.reply_text(help_text)
+
+# Обработчик команды /instruction
+async def instruction_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    instruction_text = (
+        "📖 Инструкция по установке VPN:\n\n"
+        "1. Скачай приложение Outline Client\n"
+        "2. Напиши в поддержку /support для получения конфига\n"
+        "3. Импортируй конфиг в приложение\n"
+        "4. Наслаждайся безопасным интернетом! 🔒\n\n"
+        "Если возникли проблемы - пиши /support"
+    )
+    
+    await update.message.reply_text(instruction_text)
+
+# Обработчик команды /support
+async def support_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    support_text = (
+        "👨💻 Техническая поддержка\n\n"
+        "📧 Email: support@vpn-service.ru\n"
+        "📱 Telegram: @vpn_support_helper\n"
+        "🕒 Время работы: 10:00-22:00 МСК\n\n"
+        "Опиши проблему и мы поможем! ⚡"
+    )
+    
+    await update.message.reply_text(support_text)
+
+# Запуск бота
+def main():
+    print("🚀 Запускаю бота...")
+    
+    if not BOT_TOKEN:
+        print("❌ ОШИБКА: BOT_TOKEN не найден!")
+        return
+    
+    # Создаем приложение бота
+    application = Application.builder().token(BOT_TOKEN).build()
+    
+    # Добавляем команды
+    application.add_handler(CommandHandler("start", start_command))
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("instruction", instruction_command))
+    application.add_handler(CommandHandler("support", support_command))
+    
+    # Запускаем
+    print("✅ Бот запущен!")
+    application.run_polling()
+
+if __name__ == "__main__":
+    main()
